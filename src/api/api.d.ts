@@ -29,10 +29,10 @@ interface Settings {
 
 interface BroadcastResponse {
   latestUpdate: string;
-  broadcasts: BroadcastProps[];
+  broadcasts: Broadcast[];
 }
 
-interface BroadcastProps {
+interface Broadcast {
   message: string;
   importance: BroadcastImportance;
 }

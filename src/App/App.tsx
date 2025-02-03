@@ -191,7 +191,6 @@ function App() {
             setCurrentPage={setCurrentPage}
             currentPage={currentPage}
             showTosSuggestions={!hasAgreedToTerms}
-            broadcasts={[]}
           />
         </div>
       )}

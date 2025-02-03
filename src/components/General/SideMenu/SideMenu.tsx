@@ -6,22 +6,34 @@ import MenuHeader from './MenuHeader';
 import { t } from '@i18n';
 import './SideMenu.css';
 import { MENU_ITEMS, PAGES } from '../../../constants/menuConstants';
-import Broadcast, { BroadcastImportance } from '@components/TF2/Broadcast/Broadcast';
+import Broadcast, { BroadcastImportance, BroadcastProps } from '@components/TF2/Broadcast/Broadcast';
+import { getBroadcasts } from '@api/broadcasts';
 
 interface SideMenuProps {
   setCurrentPage: Dispatch<SetStateAction<PAGES>>;
   currentPage: PAGES;
   showTosSuggestions?: boolean;
-  broadcasts: BroadcastProps[];
 }
 
 const SideMenu = ({
   setCurrentPage,
   currentPage,
   showTosSuggestions,
-  broadcasts,
 }: SideMenuProps) => {
+
   const [collapsed, setCollapsed] = React.useState(true);
+  const menuItemsToShow = MENU_ITEMS.map(({ titleKey, icon, page }) => (
+    <SideMenuItem
+      key={page}
+      title={t(titleKey)}
+      Icon={icon}
+      collapsed={collapsed}
+      onClick={() => setCurrentPage(page)}
+      selected={currentPage === page}
+    />
+  ));
+  const [broadcasts, setBroadcasts] = React.useState<BroadcastProps[]>([]);
+
   const MenuRef = React.useRef<HTMLDivElement>(null);
 
   const handleToggleCollapse = () => {
@@ -54,28 +66,39 @@ const SideMenu = ({
     };
   }, []);
 
-  const menuItemsToShow = MENU_ITEMS.map(({ titleKey, icon, page }) => (
-    <SideMenuItem
-      key={page}
-      title={t(titleKey)}
-      Icon={icon}
-      collapsed={collapsed}
-      onClick={() => setCurrentPage(page)}
-      selected={currentPage === page}
-    />
-  ));
-  if (showTosSuggestions) {
-    menuItemsToShow.push(
-      <div>
-        <ToSSideMenu collapsed={collapsed} setCurrentPage={setCurrentPage} />
-      </div>,
-    );
-  }
-  broadcasts.forEach((broadcast) => {
-    menuItemsToShow.push(
-      Broadcast(broadcast),
-    );
-  });
+  React.useEffect(() => {
+    const fetchBroadcasts = async () => {
+      try {
+        const bcastResponse = await getBroadcasts();
+        let i = 0;
+        let bcasts: BroadcastProps[] = bcastResponse.broadcasts.map((bc) => ({
+          key: `broadcast_${i++}`,
+          collapsed: collapsed,
+          broadcast: {
+            message: bc.message,
+            importance: bc.importance,
+          },
+          onClick: undefined,
+        }));
+        if (showTosSuggestions) {
+          bcasts.push( {
+            key: 'broadcast_tos',
+            collapsed: collapsed,
+            broadcast: {
+              message: t('TOS_HINT'),
+              importance: BroadcastImportance.WARNING
+            },
+            onClick: () => {setCurrentPage(PAGES.PREFERENCES)}
+          })
+        }
+
+        setBroadcasts(bcasts);
+      } catch (error) {
+        console.error('Error fetching broadcasts:', error);
+      }
+    };
+    fetchBroadcasts();
+  }, [showTosSuggestions]);
 
   return (
     <>
@@ -91,7 +114,7 @@ const SideMenu = ({
         />
         <div>
           <Divider size={2} />
-          {menuItemsToShow}
+          {[...menuItemsToShow, ...broadcasts.map(b => <Broadcast {...b} />)]}
         </div>
       </div>
       <div

@@ -11,6 +11,13 @@ export enum BroadcastImportance {
     CRITICAL
 }
 
+export type BroadcastProps = {
+    collapsed: boolean;
+    key: string;
+    broadcast: Broadcast;
+    onClick?: () => void;
+}
+
 function Broadcast(props: BroadcastProps) {
 
     const [dismissed, setDismissed] = React.useState<boolean>(false);
@@ -30,11 +37,11 @@ function Broadcast(props: BroadcastProps) {
 
   return (
     <SideMenuItem
-      key={68}
-      title={props.message}
-      Icon={getBroadcastIcon(props.importance)}
-      collapsed={dismissed}
-      onClick={() => setDismissed(true)}
+      key={props.key}
+      title={props.broadcast.message}
+      Icon={getBroadcastIcon(props.broadcast.importance)}
+      collapsed={props.collapsed}
+      onClick={props.onClick ?? (() => setDismissed(true))}
       selected={false}
     />
   );
