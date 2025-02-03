@@ -27,6 +27,16 @@ interface Settings {
   };
 }
 
+interface BroadcastResponse {
+  latestUpdate: string;
+  broadcasts: BroadcastProps[];
+}
+
+interface BroadcastProps {
+  message: string;
+  importance: BroadcastImportance;
+}
+
 interface PlayerInfoRequest {
   steamID64?: string[];
   name?: string[];

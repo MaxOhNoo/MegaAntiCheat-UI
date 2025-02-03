@@ -6,17 +6,20 @@ import MenuHeader from './MenuHeader';
 import { t } from '@i18n';
 import './SideMenu.css';
 import { MENU_ITEMS, PAGES } from '../../../constants/menuConstants';
+import Broadcast, { BroadcastImportance } from '@components/TF2/Broadcast/Broadcast';
 
 interface SideMenuProps {
   setCurrentPage: Dispatch<SetStateAction<PAGES>>;
   currentPage: PAGES;
   showTosSuggestions?: boolean;
+  broadcasts: BroadcastProps[];
 }
 
 const SideMenu = ({
   setCurrentPage,
   currentPage,
   showTosSuggestions,
+  broadcasts,
 }: SideMenuProps) => {
   const [collapsed, setCollapsed] = React.useState(true);
   const MenuRef = React.useRef<HTMLDivElement>(null);
@@ -68,6 +71,11 @@ const SideMenu = ({
       </div>,
     );
   }
+  broadcasts.forEach((broadcast) => {
+    menuItemsToShow.push(
+      Broadcast(broadcast),
+    );
+  });
 
   return (
     <>

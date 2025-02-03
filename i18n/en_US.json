@@ -142,5 +142,6 @@
   "TOS_HINT": "Masterbase features are unavailable until you agree to the terms of service.",
   "AGREE_TO_TOS": "Agree to TOS",
   "GET_ONE_HERE": "get one here",
-  "CONFIRM_EXTERNAL_LINKS": "Confirm using links to external sites"
+  "CONFIRM_EXTERNAL_LINKS": "Confirm using links to external sites",
+  "UPDATE_AVAILABLE": "A new update for MegaAntiCheat is available for download."
 }
