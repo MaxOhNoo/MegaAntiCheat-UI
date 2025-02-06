@@ -76,6 +76,7 @@ const SideMenu = ({
           collapsed: collapsed,
           broadcast: {
             message: bc.message,
+            postDate: bc.postDate,
             importance: bc.importance,
           },
           onClick: undefined,
@@ -86,13 +87,20 @@ const SideMenu = ({
             collapsed: collapsed,
             broadcast: {
               message: t('TOS_HINT'),
+              postDate: new Date().toISOString(),
               importance: BroadcastImportance.WARNING
             },
             onClick: () => {setCurrentPage(PAGES.PREFERENCES)}
           })
         }
-
-        setBroadcasts(bcasts);
+        // Sort by most important, then most recent.
+        setBroadcasts(bcasts.sort((a, b) => {
+          if (a.broadcast.importance > b.broadcast.importance) return -1;
+          if (a.broadcast.importance < b.broadcast.importance) return 1;
+          if (a.broadcast.postDate > b.broadcast.postDate) return -1;
+          if (a.broadcast.postDate < b.broadcast.postDate) return 1;
+          return 0;
+        }));
       } catch (error) {
         console.error('Error fetching broadcasts:', error);
       }

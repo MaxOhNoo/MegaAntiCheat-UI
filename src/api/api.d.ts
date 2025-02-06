@@ -34,6 +34,7 @@ interface BroadcastResponse {
 
 interface Broadcast {
   message: string;
+  postDate: string;
   importance: BroadcastImportance;
 }
 

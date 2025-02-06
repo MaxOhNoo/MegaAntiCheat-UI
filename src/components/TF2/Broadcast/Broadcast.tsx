@@ -35,7 +35,7 @@ function Broadcast(props: BroadcastProps) {
         }
     }
 
-  return (
+  return dismissed ? <></> : (
     <SideMenuItem
       key={props.key}
       title={props.broadcast.message}
