@@ -1,14 +1,14 @@
 import { t } from '@i18n';
-import { AlertCircle, AlertOctagon, AlertTriangle, Download, Info } from 'lucide-react';
+import { AlertCircle, AlertOctagon, AlertTriangle, Download, HelpCircle, Info } from 'lucide-react';
 import { SideMenuItem } from '@components/General';
 import { PAGES } from '../../../constants/menuConstants';
 import React from 'react';
 
 export enum BroadcastImportance {
-    INFO,
-    UPDATE,
-    WARNING,
-    CRITICAL
+    INFO = "INFO",
+    UPDATE = "UPDATE",
+    WARNING = "WARNING",
+    CRITICAL = "CRITICAL"
 }
 
 export type BroadcastProps = {
@@ -32,6 +32,8 @@ function Broadcast(props: BroadcastProps) {
                 return <AlertTriangle color="yellow" className="bounce"/>;
             case BroadcastImportance.CRITICAL:
                 return <AlertOctagon color="red" className="bounce"/>;
+            default:
+                return <HelpCircle color="yellow" className="bounce"/>
         }
     }
 
