@@ -107,6 +107,11 @@ const SideMenu = ({
       }
     };
     fetchBroadcasts();
+    const interval = setInterval(() => {
+        fetchBroadcasts();
+        return;
+    }, 15 * 1000);
+    return () => clearInterval(interval)
   }, [showTosSuggestions]);
 
   return (
