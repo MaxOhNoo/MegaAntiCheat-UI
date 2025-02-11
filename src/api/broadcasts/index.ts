@@ -22,11 +22,12 @@ export async function getBroadcasts(): Promise<BroadcastResponse> {
                 postDate: "1970-01-01T00:00:00Z",
                 message: "This is an INFO broadcast.",
             },
-            {
-                importance: BroadcastImportance.UPDATE,
-                postDate: "1970-01-01T00:00:00Z",
-                message: "This is what appears when a new build is available.",
-            },
+//          Handled by /version
+//          {
+//              importance: BroadcastImportance.UPDATE,
+//              postDate: "1970-01-01T00:00:00Z",
+//              message: "This is what appears when a new build is available.",
+//          },
             {
                 importance: BroadcastImportance.WARNING,
                 postDate: "1970-01-01T00:00:00Z",

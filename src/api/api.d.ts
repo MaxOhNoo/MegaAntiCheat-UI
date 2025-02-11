@@ -38,6 +38,12 @@ interface Broadcast {
   importance: BroadcastImportance;
 }
 
+interface Version {
+  currentVersion: string;
+  latestVersion: string;
+  notify: boolean;
+}
+
 interface PlayerInfoRequest {
   steamID64?: string[];
   name?: string[];

@@ -143,6 +143,6 @@
   "AGREE_TO_TOS": "Agree to TOS",
   "GET_ONE_HERE": "get one here",
   "CONFIRM_EXTERNAL_LINKS": "Confirm using links to external sites",
-  "UPDATE_AVAILABLE": "A new update for MegaAntiCheat is available for download.",
+  "UPDATE_AVAILABLE": "A new update for MegaAntiCheat is available for download.\nClick to visit the GitHub releases page.",
   "BROADCAST_FETCH_ERROR": "Can't fetch broadcasts from the anticheat client backend."
 }

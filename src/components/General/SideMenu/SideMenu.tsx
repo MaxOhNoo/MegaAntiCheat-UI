@@ -8,6 +8,7 @@ import './SideMenu.css';
 import { MENU_ITEMS, PAGES } from '../../../constants/menuConstants';
 import Broadcast, { BroadcastImportance, BroadcastProps } from '@components/TF2/Broadcast/Broadcast';
 import { getBroadcasts } from '@api/broadcasts';
+import { getVersion } from '@api/version';
 
 interface SideMenuProps {
   setCurrentPage: Dispatch<SetStateAction<PAGES>>;
@@ -69,6 +70,7 @@ const SideMenu = ({
   React.useEffect(() => {
     const fetchBroadcasts = async () => {
       try {
+        const versionResponsePromise = getVersion();
         const bcastResponse = await getBroadcasts();
         let i = 0;
         let bcasts: BroadcastProps[] = bcastResponse.broadcasts.map((bc) => ({
@@ -91,6 +93,19 @@ const SideMenu = ({
               importance: BroadcastImportance.WARNING
             },
             onClick: () => {setCurrentPage(PAGES.PREFERENCES)}
+          })
+        }
+        const version = await versionResponsePromise;
+        if (version.notify) {
+          bcasts.push({
+            key: "broadcast_update",
+            collapsed: collapsed,
+            broadcast: {
+              message: `${t('UPDATE_AVAILABLE')}\n(${version.currentVersion} -> ${version.latestVersion})`,
+              postDate: new Date().toISOString(), // I cbf populating this with the actual release date.
+              importance: BroadcastImportance.UPDATE
+            },
+            onClick: () => open("https://github.com/MegaAntiCheat/client-backend/releases")
           })
         }
         // Sort by most important, then most recent.

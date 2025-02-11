@@ -10,6 +10,7 @@ export const PREF_ENDPOINT = `${APIURL}/pref/v1`;
 export const USER_ENDPOINT = `${APIURL}/user/v1`;
 export const COMMAND_ENDPOINT = `${APIURL}/commands/v1`;
 export const BROADCASTS_ENDPOINT = `${APIURL}/broadcasts/v1`;
+export const VERSION_ENDPOINT = `${APIURL}/version/v1`;
 
 // This is used to get fakedata for the frontend.
 // dotenv breaks build, so we can't use that.
