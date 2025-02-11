@@ -94,9 +94,10 @@ const SideMenu = ({
           })
         }
         // Sort by most important, then most recent.
+        const order = Object.values(BroadcastImportance);
         setBroadcasts(bcasts.sort((a, b) => {
-          if (a.broadcast.importance > b.broadcast.importance) return -1;
-          if (a.broadcast.importance < b.broadcast.importance) return 1;
+          if (order.indexOf(a.broadcast.importance) > order.indexOf(b.broadcast.importance)) return -1;
+          if (order.indexOf(a.broadcast.importance) < order.indexOf(b.broadcast.importance)) return 1;
           if (a.broadcast.postDate > b.broadcast.postDate) return -1;
           if (a.broadcast.postDate < b.broadcast.postDate) return 1;
           return 0;
