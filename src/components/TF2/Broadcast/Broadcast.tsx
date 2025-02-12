@@ -23,7 +23,7 @@ export type BroadcastProps = {
 };
 
 function Broadcast(props: BroadcastProps) {
-  const [dismissed, setDismissed] = React.useState<boolean>(false);
+  const [dismissed] = React.useState<boolean>(false);
 
   function getBroadcastIcon(importance: BroadcastImportance) {
     switch (importance) {
@@ -48,7 +48,7 @@ function Broadcast(props: BroadcastProps) {
       title={props.broadcast.message}
       Icon={getBroadcastIcon(props.broadcast.importance)}
       collapsed={props.collapsed}
-      onClick={props.onClick ?? (() => setDismissed(true))}
+      onClick={props.onClick ?? (() => {})}
       selected={false}
     />
   );
