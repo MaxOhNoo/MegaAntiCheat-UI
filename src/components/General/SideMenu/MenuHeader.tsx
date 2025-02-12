@@ -1,5 +1,4 @@
 import React from 'react';
-import { Menu, X } from 'lucide-react';
 
 interface MenuHeaderProps {
   collapsed: boolean;
@@ -8,7 +7,7 @@ interface MenuHeaderProps {
 
 const MenuHeader: React.FC<MenuHeaderProps> = ({
   collapsed,
-  handleSymbolClick,
+  handleSymbolClick, //eslint-disable-line @typescript-eslint/no-unused-vars
 }) => {
   const menuIcon = (
     <a
