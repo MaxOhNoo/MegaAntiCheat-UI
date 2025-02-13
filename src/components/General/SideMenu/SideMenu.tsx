@@ -1,4 +1,3 @@
-import ToSSideMenu from '@components/TF2/ToS/ToSSideMenu';
 import React, { Dispatch, SetStateAction } from 'react';
 import { Divider, SideMenuItem } from '@components/General';
 import MenuHeader from './MenuHeader';
@@ -6,6 +5,12 @@ import MenuHeader from './MenuHeader';
 import { t } from '@i18n';
 import './SideMenu.css';
 import { MENU_ITEMS, PAGES } from '../../../constants/menuConstants';
+import Broadcast, {
+  BroadcastImportance,
+  BroadcastProps,
+} from '@components/TF2/Broadcast/Broadcast';
+import { getBroadcasts } from '@api/broadcasts';
+import { getVersion } from '@api/version';
 
 interface SideMenuProps {
   setCurrentPage: Dispatch<SetStateAction<PAGES>>;
@@ -19,6 +24,18 @@ const SideMenu = ({
   showTosSuggestions,
 }: SideMenuProps) => {
   const [collapsed, setCollapsed] = React.useState(true);
+  const menuItemsToShow = MENU_ITEMS.map(({ titleKey, icon, page }) => (
+    <SideMenuItem
+      key={page}
+      title={t(titleKey)}
+      Icon={icon}
+      collapsed={collapsed}
+      onClick={() => setCurrentPage(page)}
+      selected={currentPage === page}
+    />
+  ));
+  const [broadcasts, setBroadcasts] = React.useState<BroadcastProps[]>([]);
+
   const MenuRef = React.useRef<HTMLDivElement>(null);
 
   const handleToggleCollapse = () => {
@@ -51,23 +68,82 @@ const SideMenu = ({
     };
   }, []);
 
-  const menuItemsToShow = MENU_ITEMS.map(({ titleKey, icon, page }) => (
-    <SideMenuItem
-      key={page}
-      title={t(titleKey)}
-      Icon={icon}
-      collapsed={collapsed}
-      onClick={() => setCurrentPage(page)}
-      selected={currentPage === page}
-    />
-  ));
-  if (showTosSuggestions) {
-    menuItemsToShow.push(
-      <div>
-        <ToSSideMenu collapsed={collapsed} setCurrentPage={setCurrentPage} />
-      </div>,
-    );
-  }
+  React.useEffect(() => {
+    const fetchBroadcasts = async () => {
+      try {
+        const versionResponsePromise = getVersion();
+        const bcastResponse = await getBroadcasts();
+        let i = 0;
+        const bcasts: BroadcastProps[] = bcastResponse.broadcasts.map((bc) => ({
+          key: `broadcast_${i++}`,
+          collapsed: collapsed,
+          broadcast: {
+            message: bc.message,
+            postDate: bc.postDate,
+            importance: bc.importance,
+          },
+          onClick: undefined,
+        }));
+        if (showTosSuggestions) {
+          bcasts.push({
+            key: 'broadcast_tos',
+            collapsed: collapsed,
+            broadcast: {
+              message: t('TOS_HINT'),
+              postDate: new Date().toISOString(),
+              importance: BroadcastImportance.WARNING,
+            },
+            onClick: () => {
+              setCurrentPage(PAGES.PREFERENCES);
+            },
+          });
+        }
+        const version = await versionResponsePromise;
+        if (version.notify) {
+          bcasts.push({
+            key: 'broadcast_update',
+            collapsed: collapsed,
+            broadcast: {
+              message: `${t('UPDATE_AVAILABLE')}\n(${
+                version.currentVersion
+              } -> ${version.latestVersion})`,
+              postDate: new Date().toISOString(), // I cbf populating this with the actual release date.
+              importance: BroadcastImportance.UPDATE,
+            },
+            onClick: () =>
+              open('https://github.com/MegaAntiCheat/client-backend/releases'),
+          });
+        }
+        // Sort by most important, then most recent.
+        const order = Object.values(BroadcastImportance);
+        setBroadcasts(
+          bcasts.sort((a, b) => {
+            if (
+              order.indexOf(a.broadcast.importance) >
+              order.indexOf(b.broadcast.importance)
+            )
+              return -1;
+            if (
+              order.indexOf(a.broadcast.importance) <
+              order.indexOf(b.broadcast.importance)
+            )
+              return 1;
+            if (a.broadcast.postDate > b.broadcast.postDate) return -1;
+            if (a.broadcast.postDate < b.broadcast.postDate) return 1;
+            return 0;
+          }),
+        );
+      } catch (error) {
+        console.error('Error fetching broadcasts:', error);
+      }
+    };
+    fetchBroadcasts();
+    const interval = setInterval(() => {
+      fetchBroadcasts();
+      return;
+    }, 15 * 1000);
+    return () => clearInterval(interval);
+  }, [showTosSuggestions]);
 
   return (
     <>
@@ -83,7 +159,7 @@ const SideMenu = ({
         />
         <div>
           <Divider size={2} />
-          {menuItemsToShow}
+          {[...menuItemsToShow, ...broadcasts.map((b) => <Broadcast {...b} />)]}
         </div>
       </div>
       <div
